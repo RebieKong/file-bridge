@@ -38,6 +38,10 @@ public class FileMeta {
      */
     private Boolean isDir;
     /**
+     * 文件大小，目录需要设置为-1
+     */
+    private Long fileSize;
+    /**
      * 最后编辑时间
      */
     @Getter

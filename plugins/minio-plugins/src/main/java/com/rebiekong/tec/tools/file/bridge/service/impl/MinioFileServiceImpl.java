@@ -124,6 +124,7 @@ public class MinioFileServiceImpl implements IFileService {
                     .build())) {
                 fileMetas.add(FileMeta.builder()
                         .lastModifyTime(listObject.get().lastModified().toEpochSecond())
+                        .fileSize(listObject.get().size())
                         .path("/" + listObject.get().objectName())
                         .isDir(listObject.get().isDir())
                         .build());

@@ -22,6 +22,7 @@ import com.rebiekong.tec.tools.file.bridge.utils.IOUtil;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -133,11 +134,23 @@ public class LocalFileServiceImpl implements IFileService {
         }
         File[] fs = nf.listFiles();
         if (fs != null) {
-            return Arrays.stream(fs).map(s -> FileMeta.builder()
-                            .path(s.getAbsolutePath().replaceAll("\\\\", "/").replace(root, ""))
-                            .isDir(s.isDirectory())
-                            .lastModifyTime(s.lastModified())
-                            .build())
+
+            return Arrays.stream(fs).map(s -> {
+                        long size = -1L;
+                        if (s.isFile()) {
+                            try {
+                                size = Files.size(Paths.get(s.getAbsolutePath()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return FileMeta.builder()
+                                .path(s.getAbsolutePath().replaceAll("\\\\", "/").replace(root, ""))
+                                .isDir(s.isDirectory())
+                                .fileSize(size)
+                                .lastModifyTime(s.lastModified())
+                                .build();
+                    })
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();

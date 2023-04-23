@@ -229,6 +229,7 @@ public class FtpFileServiceImpl implements IFileService {
         }
         return Arrays.stream(dirs).map(file -> FileMeta.builder()
                 .isDir(file.isDirectory())
+                .fileSize(file.getSize())
                 .path(("/".equals(path) ? path : (path + "/")) + new String(file.getName().getBytes(StandardCharsets.ISO_8859_1)).replace("\\\\", "/").replaceAll(translate(""), ""))
                 .lastModifyTime(file.getTimestamp().getTimeInMillis())
                 .build()).collect(Collectors.toList());
