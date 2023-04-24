@@ -40,6 +40,7 @@ public class FileMeta {
     /**
      * 文件大小，目录需要设置为-1
      */
+    @Getter
     private Long fileSize;
     /**
      * 最后编辑时间
