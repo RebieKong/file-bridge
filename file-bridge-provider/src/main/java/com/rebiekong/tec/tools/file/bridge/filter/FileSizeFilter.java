@@ -1,7 +1,6 @@
-package com.rebiekong.tec.tools.file.bridge.impl;
+package com.rebiekong.tec.tools.file.bridge.filter;
 
 import com.rebiekong.tec.tools.file.bridge.entity.FileMeta;
-import com.rebiekong.tec.tools.file.bridge.filter.IFilter;
 
 import java.util.Map;
 

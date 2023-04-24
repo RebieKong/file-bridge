@@ -38,6 +38,9 @@ public class MirrorParam {
     private final String cloneResultPath;
 
     public static MirrorParam fromJsonObj(JSONObject obj) {
+        if (obj == null) {
+            return null;
+        }
         return MirrorParam.builder()
                 .mirrorMode(obj.getInteger("mirror_mode"))
                 .cloneResultPath(obj.getString("clone_result_path")).build();

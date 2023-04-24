@@ -13,36 +13,35 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.rebiekong.tec.tools.file.bridge.impl;
+package com.rebiekong.tec.tools.file.bridge.filter;
 
 import com.rebiekong.tec.tools.file.bridge.entity.FileMeta;
-import com.rebiekong.tec.tools.file.bridge.filter.IFilter;
 
 import java.io.File;
 import java.util.Map;
 
 /**
- * ExtFilter 后缀名筛选器
+ * PrefixFilter 前缀名筛选器
  *
  * @author rebie
- * @since 2023/04/13.
+ * @since 2023/04/24.
  */
-public class ExtFilter implements IFilter {
-    private String ext;
+public class PrefixFilter implements IFilter {
+    private String prefix;
 
     @Override
     public String flag() {
-        return "ext";
+        return "prefix";
     }
 
     @Override
     public void init(Map<String, Object> obj) {
-        this.ext = String.valueOf(obj.get("ext"));
+        this.prefix = String.valueOf(obj.get("ext"));
 
     }
 
     @Override
     public boolean test(FileMeta s) {
-        return new File(s.getPath()).getName().endsWith(ext);
+        return new File(s.getPath()).getName().startsWith(prefix);
     }
 }
