@@ -31,9 +31,13 @@ public class DelJob implements IJob {
     private final String path;
     private final IFileService fileService;
 
-    public DelJob(SingleSideParam param) {
+    private DelJob(SingleSideParam param) {
         this.path = param.getPath();
         this.fileService = param.getFileService();
+    }
+
+    public static DelJob of(SingleSideParam param) {
+        return new DelJob(param);
     }
 
     @Override

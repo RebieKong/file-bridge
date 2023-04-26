@@ -33,7 +33,7 @@ public class RetryJob implements IJob {
     private final IJob job;
     private final Integer maxFail;
 
-    public RetryJob(IJob job, Integer maxFail) {
+    private RetryJob(IJob job, Integer maxFail) {
         this.job = job;
         this.maxFail = maxFail;
     }

@@ -55,13 +55,17 @@ public class CloneJob implements IJob {
     private final String cloneResultStorePath;
     private final boolean isAppend;
 
-    public CloneJob(DualSideParam param) {
+    private CloneJob(DualSideParam param) {
         this.path = param.getPath();
         this.input = param.getInput();
         this.output = param.getOutput();
         this.cloneFinishedFlag = DEFAULT_CLONE_FINISHED_FLAG;
         this.isAppend = param.getSubParams(MIRROR_MODE_PARAM, MIRROR_MODE_FULL).equals(MIRROR_MODE_APPEND);
         this.cloneResultStorePath = param.getSubParams(CLONE_FLAG_STORE_PATH_PARAM, null);
+    }
+
+    public static CloneJob of(DualSideParam param) {
+        return new CloneJob(param);
     }
 
     @Override

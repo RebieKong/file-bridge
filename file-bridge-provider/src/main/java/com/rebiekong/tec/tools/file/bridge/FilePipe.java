@@ -76,7 +76,7 @@ public class FilePipe {
         List<IJob> jobs = new ArrayList<>();
         input.listDir(path).forEach(fileMeta -> {
             if (fileMeta.isDir()) {
-                jobs.add(RetryJob.wrap(new MkdirJob(SingleSideParam.builder()
+                jobs.add(RetryJob.wrap(MkdirJob.of(SingleSideParam.builder()
                         .path(fileMeta.getPath())
                         .fileService(output)
                         .build())));
@@ -88,14 +88,16 @@ public class FilePipe {
                             .input(input)
                             .output(output)
                             .build();
+                    IJob job;
                     if (mirrorParam != null) {
-                        jobs.add(RetryJob.wrap(new CloneJob(param
+                        job = CloneJob.of(param
                                 .setSubParams(CloneJob.MIRROR_MODE_PARAM, mirrorParam.getMirrorMode().equals(1) ? CloneJob.MIRROR_MODE_APPEND : CloneJob.MIRROR_MODE_FULL)
                                 .setSubParams(CloneJob.CLONE_FLAG_STORE_PATH_PARAM, mirrorParam.getCloneResultPath())
-                        )));
+                        );
                     } else {
-                        jobs.add(RetryJob.wrap(new MoveJob(param)));
+                        job = MoveJob.of(param);
                     }
+                    jobs.add(RetryJob.wrap(job));
                 }
             }
         });

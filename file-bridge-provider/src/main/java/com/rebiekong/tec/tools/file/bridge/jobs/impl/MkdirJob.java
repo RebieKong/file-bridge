@@ -32,9 +32,13 @@ public class MkdirJob implements IJob {
     private final String path;
     private final IFileService fileService;
 
-    public MkdirJob(SingleSideParam param) {
+    private MkdirJob(SingleSideParam param) {
         this.path = param.getPath();
         this.fileService = param.getFileService();
+    }
+
+    public static MkdirJob of(SingleSideParam param) {
+        return new MkdirJob(param);
     }
 
     @Override

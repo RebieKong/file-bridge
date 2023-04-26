@@ -37,11 +37,15 @@ public class CopyJob implements IJob {
     private final IFileService output;
     private final IJob deleteJob;
 
-    public CopyJob(DualSideParam param) {
+    private CopyJob(DualSideParam param) {
         this.path = param.getPath();
         this.input = param.getInput();
         this.output = param.getOutput();
-        this.deleteJob = RetryJob.fastFailWrap(new DelJob(param.outputSideParam()));
+        this.deleteJob = RetryJob.fastFailWrap(DelJob.of(param.outputSideParam()));
+    }
+
+    public static CopyJob of(DualSideParam param) {
+        return new CopyJob(param);
     }
 
     @Override

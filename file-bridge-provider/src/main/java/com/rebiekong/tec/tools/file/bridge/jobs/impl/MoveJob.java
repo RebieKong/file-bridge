@@ -35,12 +35,16 @@ public class MoveJob implements IJob {
     private final IFileService input;
     private final IFileService output;
 
-    public MoveJob(DualSideParam param) {
+    private MoveJob(DualSideParam param) {
         this.path = param.getPath();
         this.input = param.getInput();
         this.output = param.getOutput();
-        this.copyJob = RetryJob.wrap(new CopyJob(param));
-        this.delJob = RetryJob.wrap(new DelJob(param.inputSideParam()), RetryJob.NEVER_RETRY);
+        this.copyJob = RetryJob.wrap(CopyJob.of(param));
+        this.delJob = RetryJob.wrap(DelJob.of(param.inputSideParam()), RetryJob.NEVER_RETRY);
+    }
+
+    public static MoveJob of(DualSideParam param) {
+        return new MoveJob(param);
     }
 
     @Override
