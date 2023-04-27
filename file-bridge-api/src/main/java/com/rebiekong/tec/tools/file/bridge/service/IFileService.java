@@ -72,6 +72,7 @@ public interface IFileService {
 
     /**
      * 获取目录中的文件信息（文件/目录）
+     * TODO 需要注意，当返回的单层中文件量超级大的时候可能会存在问题，后续进一步优化成使用迭代器的方式返回
      *
      * @param path 当前数据源的相对路径
      * @return 目录文件信息

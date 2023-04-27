@@ -36,7 +36,7 @@ public class PrefixFilter implements IFilter {
 
     @Override
     public void init(Map<String, Object> obj) {
-        this.prefix = String.valueOf(obj.get("ext"));
+        this.prefix = String.valueOf(obj.get("prefix"));
 
     }
 
