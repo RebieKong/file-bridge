@@ -19,6 +19,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.File;
+
 /**
  * FileMeta 文件meta信息
  *
@@ -47,6 +49,10 @@ public class FileMeta {
      */
     @Getter
     private Long lastModifyTime;
+
+    public String getFileName() {
+        return new File(path).getName();
+    }
 
     public boolean isDir() {
         return isDir;
