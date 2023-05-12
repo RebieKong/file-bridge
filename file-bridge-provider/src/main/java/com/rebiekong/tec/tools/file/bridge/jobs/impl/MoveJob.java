@@ -19,6 +19,7 @@ import com.rebiekong.tec.tools.file.bridge.jobs.IJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.param.DualSideParam;
 import com.rebiekong.tec.tools.file.bridge.service.IFileService;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * MoveJob
@@ -27,9 +28,11 @@ import lombok.ToString;
  * @since 2023/04/13.
  */
 @ToString
+@Slf4j
 public class MoveJob implements IJob {
 
     private final IJob copyJob;
+    private final IJob rollBackJob;
     private final IJob delJob;
     private final String path;
     private final IFileService input;
@@ -40,6 +43,7 @@ public class MoveJob implements IJob {
         this.input = param.getInput();
         this.output = param.getOutput();
         this.copyJob = RetryJob.wrap(CopyJob.of(param));
+        this.rollBackJob = RetryJob.wrap(DelJob.of(param.outputSideParam()), RetryJob.NEVER_RETRY);
         this.delJob = RetryJob.wrap(DelJob.of(param.inputSideParam()), RetryJob.NEVER_RETRY);
     }
 
@@ -49,7 +53,12 @@ public class MoveJob implements IJob {
 
     @Override
     public void run() {
-        copyJob.run();
-        delJob.run();
+        try {
+            copyJob.run();
+            delJob.run();
+        } catch (Throwable t) {
+            log.error(t.getMessage(), t);
+            rollBackJob.run();
+        }
     }
 }

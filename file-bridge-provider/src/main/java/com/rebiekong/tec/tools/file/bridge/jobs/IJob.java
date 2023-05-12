@@ -16,7 +16,8 @@
 package com.rebiekong.tec.tools.file.bridge.jobs;
 
 /**
- * IJob
+ * IJob 文件同步作业
+ * 文件同步作业是程序中运行的最小单元
  *
  * @author rebie
  * @since 2023/04/13.
