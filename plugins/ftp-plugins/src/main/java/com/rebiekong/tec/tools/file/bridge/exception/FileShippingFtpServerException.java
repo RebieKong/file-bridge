@@ -23,3 +23,4 @@ package com.rebiekong.tec.tools.file.bridge.exception;
  */
 public class FileShippingFtpServerException extends FileShippingException {
 }
+

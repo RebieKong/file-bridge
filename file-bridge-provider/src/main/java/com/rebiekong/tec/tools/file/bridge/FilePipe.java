@@ -15,6 +15,7 @@
  */
 package com.rebiekong.tec.tools.file.bridge;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rebiekong.tec.tools.file.bridge.entity.FileMeta;
 import com.rebiekong.tec.tools.file.bridge.jobs.IJob;
@@ -42,20 +43,25 @@ public class FilePipe {
 
     private static final String ROOT = "/";
     private final MirrorParam mirrorParam;
-    private final IFileService input;
+    private final List<IFileService> inputs;
     private final IFileService output;
     private final Predicate<FileMeta> filePredicate;
 
     public FilePipe(FilePipeParam param) {
-        this.input = param.getInput();
+        this.inputs = param.getInputs();
         this.output = param.getOutput();
         this.filePredicate = param.getFilePredicate();
         this.mirrorParam = param.getMirrorParam();
     }
 
     public static FilePipe getPipeLine(JSONObject obj) {
+        JSONArray inputArr = obj.getJSONArray("input");
+        List<IFileService> inputFileServices = new ArrayList<>();
+        for (int i = 0; i < inputArr.size(); i++) {
+            inputFileServices.add(FileServiceFactory.getService(inputArr.getJSONObject(i)));
+        }
         return new FilePipe(FilePipeParam.builder()
-                .input(FileServiceFactory.getService(obj.getJSONObject("input")))
+                .inputs(inputFileServices)
                 .output(FileServiceFactory.getService(obj.getJSONObject("output")))
                 .filePredicate(FilterFactory.getFilter(obj.getJSONArray("file_filter")))
                 .mirrorParam(MirrorParam.fromJsonObj(obj.getJSONObject("mirror_param")))
@@ -63,18 +69,17 @@ public class FilePipe {
     }
 
     public void run() {
-        List<IJob> jobs = analyzePath(ROOT);
-        jobs.forEach(IJob::run);
+        analyzePath(ROOT).forEach(IJob::run);
     }
 
     public void close() {
-        input.close();
+        inputs.forEach(IFileService::close);
         output.close();
     }
 
     private List<IJob> analyzePath(String path) {
         List<IJob> jobs = new ArrayList<>();
-        input.listDir(path).forEach(fileMeta -> {
+        inputs.forEach(input -> input.listDir(path).forEach(fileMeta -> {
             if (fileMeta.isDir()) {
                 jobs.add(RetryJob.wrap(MkdirJob.of(SingleSideParam.builder()
                         .path(fileMeta.getPath())
@@ -100,7 +105,7 @@ public class FilePipe {
                     jobs.add(RetryJob.wrap(job));
                 }
             }
-        });
+        }));
         return jobs;
     }
 

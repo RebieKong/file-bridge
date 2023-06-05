@@ -20,7 +20,7 @@ import com.rebiekong.tec.tools.file.bridge.entity.FileMeta;
 import java.util.Map;
 
 /**
- * PatternFilter
+ * PatternFilter 正则过滤器
  *
  * @author rebie
  * @since 2023/05/08.

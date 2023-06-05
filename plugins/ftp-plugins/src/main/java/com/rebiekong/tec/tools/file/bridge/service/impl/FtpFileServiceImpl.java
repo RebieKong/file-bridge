@@ -28,6 +28,8 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +55,8 @@ public class FtpFileServiceImpl implements IFileService {
     private String userName;
     private String userPassword;
     private String root;
+    private String serverCharset;
+    private Boolean ifUsingTemp;
     private FTPClient ftpClient;
     private ScheduledExecutorService exe;
 
@@ -73,6 +77,9 @@ public class FtpFileServiceImpl implements IFileService {
         this.port = Integer.parseInt(obj.get("port"));
         this.userName = obj.get("username");
         this.userPassword = obj.get("password");
+        this.serverCharset = obj.getOrDefault("charset", "ISO-8859-1");
+        this.ifUsingTemp = Boolean.valueOf(obj.getOrDefault("usingTemp", "true"));
+
         try {
             initFtp();
         } catch (IOException e) {
@@ -88,6 +95,7 @@ public class FtpFileServiceImpl implements IFileService {
         ftpClient.connect(ip, port);
         ftpClient.login(userName, userPassword);
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+        ftpClient.setCharset(Charset.forName(serverCharset));
         ftpClient.enterLocalPassiveMode();
         ftpClient.setKeepAlive(true);
     }
@@ -198,18 +206,27 @@ public class FtpFileServiceImpl implements IFileService {
     public void write(String path, InputStream inputStream) {
         tryFtp();
         try {
-            ftpClient.storeFile(translate(path + ".temp"), inputStream);
-            ftpClient.rename(translate(path + ".temp"), translate(path));
+            if (ifUsingTemp) {
+                ftpClient.storeFile(translate(path + ".temp"), inputStream);
+                ftpClient.rename(translate(path + ".temp"), translate(path));
+            } else {
+                ftpClient.storeFile(translate(path), inputStream);
+            }
         } catch (IOException e) {
             throw new FileShippingWriteException();
         }
     }
 
     private String translate(String path) {
-        if (Objects.equals(path, "/")) {
-            return new String((root).getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-        } else {
-            return new String((root + path).getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+        try {
+            if (Objects.equals(path, "/")) {
+                return new String((root).getBytes(StandardCharsets.UTF_8), serverCharset);
+            } else {
+                return new String((root + path).getBytes(StandardCharsets.UTF_8), serverCharset);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new FileShippingListException();
         }
     }
 

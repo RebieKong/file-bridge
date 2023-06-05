@@ -20,7 +20,7 @@ import com.rebiekong.tec.tools.file.bridge.entity.FileMeta;
 import java.util.Map;
 
 /**
- * FileSizeFilter
+ * FileSizeFilter 文件大小过滤器
  *
  * @author rebie
  * @since 2023/04/23.

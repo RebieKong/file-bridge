@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * PrefixFilter 前缀名筛选器
+ * PrefixFilter 前缀过滤器
  *
  * @author rebie
  * @since 2023/04/24.

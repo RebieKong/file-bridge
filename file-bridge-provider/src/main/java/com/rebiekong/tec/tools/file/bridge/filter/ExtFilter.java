@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * ExtFilter 后缀名筛选器
+ * ExtFilter 后缀过滤器
  *
  * @author rebie
  * @since 2023/04/13.

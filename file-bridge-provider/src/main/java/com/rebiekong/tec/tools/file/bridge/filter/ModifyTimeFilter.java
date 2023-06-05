@@ -20,7 +20,7 @@ import com.rebiekong.tec.tools.file.bridge.entity.FileMeta;
 import java.util.Map;
 
 /**
- * ModifyTimeFilter 修改时间筛选器
+ * ModifyTimeFilter 修改时间过滤器
  *
  * @author rebie
  * @since 2023/04/13.

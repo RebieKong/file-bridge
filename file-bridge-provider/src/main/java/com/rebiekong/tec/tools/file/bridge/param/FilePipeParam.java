@@ -20,6 +20,7 @@ import com.rebiekong.tec.tools.file.bridge.service.IFileService;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -34,7 +35,7 @@ public class FilePipeParam {
     /**
      * 源插件
      */
-    private final IFileService input;
+    private final List<IFileService> inputs;
     /**
      * 目标插件
      */
