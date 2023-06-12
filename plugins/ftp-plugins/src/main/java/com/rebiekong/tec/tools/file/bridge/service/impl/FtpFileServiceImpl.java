@@ -56,6 +56,7 @@ public class FtpFileServiceImpl implements IFileService {
     private String userPassword;
     private String root;
     private String serverCharset;
+    private String tmpPrefix;
     private Boolean ifUsingTemp;
     private FTPClient ftpClient;
     private ScheduledExecutorService exe;
@@ -79,6 +80,7 @@ public class FtpFileServiceImpl implements IFileService {
         this.userPassword = obj.get("password");
         this.serverCharset = obj.getOrDefault("charset", "ISO-8859-1");
         this.ifUsingTemp = Boolean.valueOf(obj.getOrDefault("usingTemp", "true"));
+        this.tmpPrefix = obj.getOrDefault("tmpPrefix", ".tmp");
 
         try {
             initFtp();
@@ -207,8 +209,8 @@ public class FtpFileServiceImpl implements IFileService {
         tryFtp();
         try {
             if (ifUsingTemp) {
-                ftpClient.storeFile(translate(path + ".temp"), inputStream);
-                ftpClient.rename(translate(path + ".temp"), translate(path));
+                ftpClient.storeFile(translate(path + tmpPrefix), inputStream);
+                ftpClient.rename(translate(path + tmpPrefix), translate(path));
             } else {
                 ftpClient.storeFile(translate(path), inputStream);
             }
