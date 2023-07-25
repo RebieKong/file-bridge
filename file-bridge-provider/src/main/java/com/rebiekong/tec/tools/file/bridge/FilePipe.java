@@ -57,8 +57,10 @@ public class FilePipe {
     public static FilePipe getPipeLine(JSONObject obj) {
         JSONArray inputArr = obj.getJSONArray("input");
         List<IFileService> inputFileServices = new ArrayList<>();
-        for (int i = 0; i < inputArr.size(); i++) {
-            inputFileServices.add(FileServiceFactory.getService(inputArr.getJSONObject(i)));
+        if (inputArr != null) {
+            for (int i = 0; i < inputArr.size(); i++) {
+                inputFileServices.add(FileServiceFactory.getService(inputArr.getJSONObject(i)));
+            }
         }
         return new FilePipe(FilePipeParam.builder()
                 .inputs(inputFileServices)
