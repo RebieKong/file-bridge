@@ -31,10 +31,7 @@ public class StrUtil {
                     return false;
                 }
             }
-
-            return true;
-        } else {
-            return true;
         }
+        return true;
     }
 }

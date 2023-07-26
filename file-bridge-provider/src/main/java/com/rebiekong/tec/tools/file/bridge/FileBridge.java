@@ -43,7 +43,6 @@ public class FileBridge {
             JSONObject pipeLineInfo = res.getJSONObject(i);
             filePipeList.add(FilePipe.getPipeLine(pipeLineInfo));
         }
-        // TODO 后续可改使用可限速的多线程/分布式的技术方案
         for (FilePipe filePipe : filePipeList) {
             filePipe.run();
             filePipe.close();

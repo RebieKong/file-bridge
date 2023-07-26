@@ -26,16 +26,19 @@
   * [x] 正则过滤
   * [x] 修改时间过滤
   * [x] 文件大小的过滤
-* [ ] FileService Plugins
+* [x] FileService Plugins
   * [x] 本地文件 plugins
   * [x] Ftp Plugins
   * [x] Minio Plugins
-  * [ ] oss
+  * [x] S3协议支持（minio base)
 * [ ] 运行方式的优化
-  * [ ] 并行传输
+  * [ ] 增设本地缓存机制
   * [x] 增加 多入单出 的运行模式
   * [ ] 增加 单入多出 的运行模式
   * [ ] GraalVM加持构建二进制分发
+  * [ ] 可视化管理平台
+  * [ ] 加密的配置文件
+  * [ ] 分片传输
 * [ ] 增加更多的日志跟踪日志
 
 ## 同步命令
