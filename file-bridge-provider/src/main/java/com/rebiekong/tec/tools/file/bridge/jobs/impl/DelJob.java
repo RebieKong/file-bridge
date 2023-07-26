@@ -15,7 +15,7 @@
  */
 package com.rebiekong.tec.tools.file.bridge.jobs.impl;
 
-import com.rebiekong.tec.tools.file.bridge.jobs.IJob;
+import com.rebiekong.tec.tools.file.bridge.jobs.BaseJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.param.SingleSideParam;
 import com.rebiekong.tec.tools.file.bridge.service.IFileService;
 import lombok.ToString;
@@ -27,7 +27,7 @@ import lombok.ToString;
  * @since 2023/04/13.
  */
 @ToString
-public class DelJob implements IJob {
+public class DelJob extends BaseJob {
     private final String path;
     private final IFileService fileService;
 

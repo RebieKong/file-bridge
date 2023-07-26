@@ -30,8 +30,13 @@ import com.rebiekong.tec.tools.file.bridge.param.MirrorParam;
 import com.rebiekong.tec.tools.file.bridge.service.IFileService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * FilePipe
@@ -80,35 +85,45 @@ public class FilePipe {
     }
 
     private List<IJob> analyzePath(String path) {
-        List<IJob> jobs = new ArrayList<>();
-        inputs.forEach(input -> input.listDir(path).forEach(fileMeta -> {
-            if (fileMeta.isDir()) {
-                jobs.add(RetryJob.wrap(MkdirJob.of(SingleSideParam.builder()
-                        .path(fileMeta.getPath())
-                        .fileService(output)
-                        .build())));
-                jobs.addAll(analyzePath(fileMeta.getPath()));
-            } else if (fileMeta.isFile()) {
-                if (filePredicate.test(fileMeta)) {
-                    DualSideParam param = DualSideParam.builder()
-                            .path(fileMeta.getPath())
-                            .input(input)
-                            .output(output)
-                            .build();
-                    IJob job;
-                    if (mirrorParam != null) {
-                        job = CloneJob.of(param
-                                .setSubParams(CloneJob.MIRROR_MODE_PARAM, mirrorParam.getMirrorMode().equals(1) ? CloneJob.MIRROR_MODE_APPEND : CloneJob.MIRROR_MODE_FULL)
-                                .setSubParams(CloneJob.CLONE_FLAG_STORE_PATH_PARAM, mirrorParam.getCloneResultPath())
-                        );
-                    } else {
-                        job = MoveJob.of(param);
-                    }
-                    jobs.add(RetryJob.wrap(job));
-                }
-            }
-        }));
-        return jobs;
+        AtomicInteger inputCT = new AtomicInteger(0);
+        Function<List<IJob>, Consumer<IJob>> jobAccepter = jobList -> {
+            AtomicInteger listIndexHolder = new AtomicInteger(0);
+            return job -> job.setJobIndex(listIndexHolder.getAndIncrement());
+        };
+        return inputs.stream().parallel()
+                .flatMap(input -> {
+                    int inputIndex = inputCT.getAndIncrement();
+                    return input.listDir(path).stream().flatMap(fileMeta -> {
+                        List<IJob> jobs = new ArrayList<>();
+                        Consumer<IJob> jobAppender = jobAccepter.apply(jobs);
+                        if (fileMeta.isDir()) {
+                            jobAppender.accept(RetryJob.wrap(MkdirJob.of(SingleSideParam.builder()
+                                    .path(fileMeta.getPath())
+                                    .fileService(output)
+                                    .build())));
+                            analyzePath(fileMeta.getPath()).forEach(jobAppender);
+                        } else if (fileMeta.isFile()) {
+                            if (filePredicate.test(fileMeta)) {
+                                DualSideParam param = DualSideParam.builder()
+                                        .path(fileMeta.getPath())
+                                        .input(input)
+                                        .output(output)
+                                        .build();
+                                IJob job;
+                                if (mirrorParam != null) {
+                                    job = CloneJob.of(param
+                                            .setSubParams(CloneJob.MIRROR_MODE_PARAM, mirrorParam.getMirrorMode().equals(1) ? CloneJob.MIRROR_MODE_APPEND : CloneJob.MIRROR_MODE_FULL)
+                                            .setSubParams(CloneJob.CLONE_FLAG_STORE_PATH_PARAM, mirrorParam.getCloneResultPath())
+                                    );
+                                } else {
+                                    job = MoveJob.of(param);
+                                }
+                                jobAppender.accept(RetryJob.wrap(job));
+                            }
+                        }
+                        return jobs.stream();
+                    }).peek(s -> s.setInputIndex(inputIndex));
+                }).sorted(Comparator.comparing(IJob::sortIndex)).collect(Collectors.toList());
     }
 
 }

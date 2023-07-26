@@ -16,7 +16,7 @@
 package com.rebiekong.tec.tools.file.bridge.jobs.impl;
 
 import cn.hutool.core.io.IoUtil;
-import com.rebiekong.tec.tools.file.bridge.jobs.IJob;
+import com.rebiekong.tec.tools.file.bridge.jobs.BaseJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.param.DualSideParam;
 import com.rebiekong.tec.tools.file.bridge.service.IFileService;
 import lombok.ToString;
@@ -38,7 +38,7 @@ import java.util.function.Predicate;
  * @since 2023/04/13.
  */
 @ToString
-public class CloneJob implements IJob {
+public class CloneJob extends BaseJob {
 
     public static final String DEFAULT_CLONE_FINISHED_FLAG = ".cloneFinish";
     public static final String MIRROR_MODE_PARAM = "MIRROR_MODE_PARAM";

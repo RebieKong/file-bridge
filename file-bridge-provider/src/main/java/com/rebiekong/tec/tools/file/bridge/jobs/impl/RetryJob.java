@@ -15,6 +15,7 @@
  */
 package com.rebiekong.tec.tools.file.bridge.jobs.impl;
 
+import com.rebiekong.tec.tools.file.bridge.jobs.BaseJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.IJob;
 import lombok.ToString;
 
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @since 2023/04/13.
  */
 @ToString
-public class RetryJob implements IJob {
+public class RetryJob extends BaseJob {
 
     public static final int NEVER_RETRY = -1;
     private final IJob job;

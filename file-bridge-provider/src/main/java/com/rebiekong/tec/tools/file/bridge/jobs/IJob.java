@@ -27,4 +27,11 @@ public interface IJob {
      * 任务运行
      */
     void run();
+
+    void setInputIndex(Integer inputIndex);
+
+    void setJobIndex(Integer jobIndex);
+
+
+    String sortIndex();
 }

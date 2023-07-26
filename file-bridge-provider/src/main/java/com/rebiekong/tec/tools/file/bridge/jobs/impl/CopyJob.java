@@ -15,6 +15,7 @@
  */
 package com.rebiekong.tec.tools.file.bridge.jobs.impl;
 
+import com.rebiekong.tec.tools.file.bridge.jobs.BaseJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.IJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.param.DualSideParam;
 import com.rebiekong.tec.tools.file.bridge.service.IFileService;
@@ -30,7 +31,7 @@ import java.io.InputStream;
  * @since 2023/04/13.
  */
 @ToString
-public class CopyJob implements IJob {
+public class CopyJob extends BaseJob {
 
     private final String path;
     private final IFileService input;

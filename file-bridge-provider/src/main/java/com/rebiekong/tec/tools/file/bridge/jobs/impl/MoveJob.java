@@ -15,6 +15,7 @@
  */
 package com.rebiekong.tec.tools.file.bridge.jobs.impl;
 
+import com.rebiekong.tec.tools.file.bridge.jobs.BaseJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.IJob;
 import com.rebiekong.tec.tools.file.bridge.jobs.param.DualSideParam;
 import com.rebiekong.tec.tools.file.bridge.service.IFileService;
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @ToString
 @Slf4j
-public class MoveJob implements IJob {
+public class MoveJob extends BaseJob {
 
     private final IJob copyJob;
     private final IJob rollBackJob;
